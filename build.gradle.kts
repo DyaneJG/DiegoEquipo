@@ -39,6 +39,7 @@ dependencies {
     runtimeOnly("io.jsonwebtoken:jjwt-jackson:0.12.6")
 	implementation("org.hibernate:hibernate-spatial:6.5.2.Final")
 	implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.6.0")
+	runtimeOnly("com.h2database:h2")
 }
 
 tasks.withType<Test> {
