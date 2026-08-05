@@ -2,6 +2,7 @@ package mx.edomex.rutas.repartidores.service;
 
 import mx.edomex.rutas.repartidores.model.Repartidor;
 import mx.edomex.rutas.repartidores.repository.RepartidorRepository;
+import org.mindrot.jbcrypt.BCrypt; // Importación de la librería de seguridad
 import org.springframework.stereotype.Service;
 import java.util.List;
 
@@ -17,7 +18,14 @@ public class RepartidorServiceImpl implements RepartidorService {
 
     @Override
     public Repartidor registrarRepartidor(Repartidor repartidor) {
-        repartidor.setEstado("DISPONIBLE"); //la lógica de negocio por defecto
+        repartidor.setEstado("DISPONIBLE"); // la lógica de negocio por defecto
+
+        // 1. Encriptamos la contraseña antes de guardar el nuevo repartidor
+        if (repartidor.getContrasena() != null && !repartidor.getContrasena().isEmpty()) {
+            String passwordEncriptada = BCrypt.hashpw(repartidor.getContrasena(), BCrypt.gensalt());
+            repartidor.setContrasena(passwordEncriptada);
+        }
+
         return repository.save(repartidor);
     }
 
@@ -38,10 +46,29 @@ public class RepartidorServiceImpl implements RepartidorService {
         repartidorExistente.setTelefono(detallesRepartidor.getTelefono());
         repartidorExistente.setPlacaVehiculo(detallesRepartidor.getPlacaVehiculo());
 
+        repartidorExistente.setCorreo(detallesRepartidor.getCorreo());
+
         // 3. Permitimos la modificación del estado desde el JSON
         repartidorExistente.setEstado(detallesRepartidor.getEstado());
 
-        // 4. Guardamos los cambios en PostgreSQL
+        // 4. Si el JSON trae una nueva contraseña, la encriptamos y la actualizamos
+        if (detallesRepartidor.getContrasena() != null && !detallesRepartidor.getContrasena().isEmpty()) {
+            String passwordEncriptada = BCrypt.hashpw(detallesRepartidor.getContrasena(), BCrypt.gensalt());
+            repartidorExistente.setContrasena(passwordEncriptada);
+        }
+
+        // 5. Guardamos los cambios en PostgreSQL
         return repository.save(repartidorExistente);
+    }
+
+    // Método DELETE
+    @Override
+    public void eliminarRepartidor(Long id) {
+        // 1. Buscamos si existe
+        Repartidor repartidorExistente = repository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Error: Repartidor no encontrado con el ID: " + id));
+
+        // 2. Si existe, lo borramos
+        repository.delete(repartidorExistente);
     }
 }

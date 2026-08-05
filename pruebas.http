@@ -1,38 +1,52 @@
+### 1. ZONA DE REPARTIDORES
+
 ### Registrar un nuevo repartidor
 POST http://localhost:8080/api/repartidores
 Content-Type: application/json
 
 {
-  "nombreCompleto": "Perez Lopez",
-  "telefono": "5573648911",
-  "placaVehiculo": "ABC-122-D",
-  "estado": "DISPONIBLE"
-
+  "nombreCompleto": "Juan Manuel",
+  "telefono": "5643648911",
+  "placaVehiculo": "CDA-322-D",
+  "estado": "DISPONIBLE",
+  "correo": "Juan@correo.com",
+  "contrasena": "1234"
 }
-### Actualizar estado del repartidor 11
-PUT http://localhost:8080/api/repartidores/11
+
+### Actualizar estado de un repartidor existente
+PUT http://localhost:8080/api/repartidores/6
 Content-Type: application/json
 
 {
-  "nombreCompleto": "Perez Lopez",
-  "telefono": "1234567890",
-  "placaVehiculo": "ABC-123-E",
-  "estado": "NO DISPONIBLE"
+  "nombreCompleto": "Carlos Sánchez",
+  "telefono": "5512345678",
+  "placaVehiculo": "NMP-2026",
+  "estado": "DISPONIBLE",
+  "correo": "carlos@correo.com",
+  "contrasena": "1234secreto"
 }
 
 ### Consultar repartidores disponibles
 GET http://localhost:8080/api/repartidores/disponibles
 Accept: application/json
 
-### Enviar ubicación GPS al repartidor
-POST http://localhost:8080/api/repartidores/1/ubicaciones
+### Eliminar un repartidor por su ID
+DELETE http://localhost:8080/api/repartidores/2
+
+### 2. ZONA DE LOGÍSTICA
+
+### PASO 1: Asignar un pedido existente a un repartidor disponible
+POST http://localhost:8080/api/rutas/asignar/1002
+
+### PASO 2: Simular que el repartidor asignado va en camino (Tracking)
+POST http://localhost:8080/api/tracking/actualizar
 Content-Type: application/json
 
 {
-  "latitud": 80.432608,
-  "longitud": -70.133209
+  "repartidorId": 4,
+  "latitud": 70.5140,
+  "longitud": -108.8805
 }
 
-### Obtener el historial de GPS del repartidor
-GET http://localhost:8080/api/repartidores/1/ubicaciones
-Accept: application/json
+### PASO 3: Finalizar la entrega del pedido
+POST http://localhost:8080/api/rutas/completar/1002

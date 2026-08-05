@@ -8,4 +8,5 @@ public interface RepartidorService {
     Repartidor registrarRepartidor(Repartidor repartidor);
     List<Repartidor> obtenerRepartidoresDisponibles();
     Repartidor actualizarRepartidor(Long id, Repartidor detallesRepartidor);
+    void eliminarRepartidor(Long id);
 }

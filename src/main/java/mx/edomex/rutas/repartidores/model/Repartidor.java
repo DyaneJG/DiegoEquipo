@@ -1,5 +1,6 @@
 package mx.edomex.rutas.repartidores.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -37,8 +38,15 @@ public class Repartidor {
     @NotBlank(message = "El estado no puede estar vacío")
     private String estado;
 
+    @NotBlank(message = "El correo es obligatorio")
+    private String correo;
+
+    @NotBlank(message = "La contraseña es obligatoria")
+    private String contrasena;
+
     // Un repartidor tiene muchas ubicaciones.
     // cascade = CascadeType.ALL, si se borra al repartidor se borra su historial
+    @JsonIgnore
     @OneToMany(mappedBy = "repartidor", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Ubicacion> historialUbicaciones = new ArrayList<>();
 
@@ -86,7 +94,22 @@ public class Repartidor {
         this.estado = estado;
     }
 
-    // --- NUEVOS GETTERS Y SETTERS ---
+    public String getCorreo() {
+        return correo;
+    }
+
+    public void setCorreo(String correo) {
+        this.correo = correo;
+    }
+
+    public String getContrasena() {
+        return contrasena;
+    }
+
+    public void setContrasena(String contrasena) {
+        this.contrasena = contrasena;
+    }
+
     public List<Ubicacion> getHistorialUbicaciones() {
         return historialUbicaciones;
     }

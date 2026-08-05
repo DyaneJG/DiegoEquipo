@@ -6,8 +6,6 @@ import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PutMapping;
 
 import java.util.List;
 
@@ -23,17 +21,16 @@ public class RepartidorController {
 
     @PostMapping
     public ResponseEntity<Repartidor> registrarRepartidor(@Valid @RequestBody Repartidor repartidor) {
-        // Ahora sí usamos el nombre exacto de tu método
         Repartidor nuevoRepartidor = repartidorService.registrarRepartidor(repartidor);
         return new ResponseEntity<>(nuevoRepartidor, HttpStatus.CREATED);
     }
 
-    @GetMapping
+    @GetMapping("/disponibles")
     public ResponseEntity<List<Repartidor>> listarRepartidores() {
-        // Ahora sí usamos el nombre exacto de tu método
         List<Repartidor> repartidores = repartidorService.obtenerRepartidoresDisponibles();
         return ResponseEntity.ok(repartidores);
     }
+
     @PutMapping("/{id}")
     public ResponseEntity<Repartidor> actualizarRepartidor(
             @PathVariable Long id,
@@ -43,4 +40,14 @@ public class RepartidorController {
         return ResponseEntity.ok(actualizado);
     }
 
+    // Endpoint DELETE
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> eliminarRepartidor(@PathVariable Long id) {
+        try {
+            repartidorService.eliminarRepartidor(id);
+            return ResponseEntity.ok("¡Éxito! El repartidor y todo su historial han sido eliminados del sistema.");
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
 }
