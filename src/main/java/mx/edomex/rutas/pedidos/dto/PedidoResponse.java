@@ -1,6 +1,7 @@
 package mx.edomex.rutas.pedidos.dto;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.OffsetDateTime;
 import java.util.UUID;
@@ -24,10 +25,11 @@ public class PedidoResponse {
   private BigDecimal subtotal;
   private BigDecimal iva;
   private BigDecimal cargoEntrega;
+  private BigDecimal total;
   private String notas;
   private LocalTime ventanaInicio;
   private LocalTime ventanaFin;
-  private OffsetDateTime fechaEntregaProgramada;
+  private LocalDate fechaEntregaProgramada;
   private OffsetDateTime fechaEntregaReal;
   private String canceladoMotivo;
   private OffsetDateTime creadoEn;

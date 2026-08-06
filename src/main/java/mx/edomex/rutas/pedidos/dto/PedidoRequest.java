@@ -1,11 +1,13 @@
 package mx.edomex.rutas.pedidos.dto;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.UUID;
 
 import jakarta.validation.constraints.DecimalMax;
 import jakarta.validation.constraints.DecimalMin;
+import jakarta.validation.constraints.FutureOrPresent;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -39,4 +41,8 @@ public class PedidoRequest {
   private String notas;
   private LocalTime ventanaInicio;
   private LocalTime ventanaFin;
+
+  @NotNull(message = "La fecha de entrega programada es requerida")
+  @FutureOrPresent(message = "la fecha de entrega debe ser de hoy en adelante")
+  private LocalDate fechaEntregaProgramada;
 }

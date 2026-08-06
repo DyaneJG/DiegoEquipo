@@ -10,18 +10,18 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
-// import org.springframework.stereotype.Repository;
+import org.springframework.stereotype.Repository;
 
 import io.lettuce.core.dynamic.annotation.Param;
 import mx.edomex.rutas.pedidos.model.EstadoPedido;
 import mx.edomex.rutas.pedidos.model.Pedido;
 
-// @Repository
+@Repository
 public interface PedidoRepository extends JpaRepository<Pedido, UUID> {
 
   Optional<Pedido> findByNumeroPedido(String numeroPedido);
   List<Pedido> findByClienteId(UUID clienteId);
-  List<Pedido> findByEstado(String estado);
+  List<Pedido> findByEstado(EstadoPedido estado);
     
   Page<Pedido> findByEstado(EstadoPedido estado, Pageable pageable);
   
@@ -32,7 +32,8 @@ public interface PedidoRepository extends JpaRepository<Pedido, UUID> {
 
   @Query("SELECT p FROM Pedido p WHERE p.clienteId = :clienteId AND p.estado = :estado")
   List <Pedido> findByClienteIdAndEstado(@Param("clienteId") UUID clienteId, @Param("estado") EstadoPedido estado);
-  
+  @Query("SELECT COUNT(p) FROM Pedido p WHERE p.numeroPedido LIKE :prefijo%")
+long countByNumeroPedidoStartingWith(@Param("prefijo") String prefijo);
   boolean existsByNumeroPedido(String numeroPedido);
   
 }
