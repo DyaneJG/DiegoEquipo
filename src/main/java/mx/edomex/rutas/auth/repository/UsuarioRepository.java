@@ -4,8 +4,9 @@ import mx.edomex.rutas.auth.model.Usuario;
 import mx.edomex.rutas.shared.audit.BaseAuditRepository;
 
 import java.util.Optional;
+import java.util.UUID;
 
-public interface UsuarioRepository extends BaseAuditRepository<Usuario, Long> {
-    Optional<Usuario> findByEmailAndActivoTrue(String email);
-    boolean existsByEmail(String email);
+public interface UsuarioRepository extends BaseAuditRepository<Usuario, UUID> {
+    Optional<Usuario> findBycorreoAndActivoTrue(String correo);
+    boolean existsByCorreo(String corrreo);
 }

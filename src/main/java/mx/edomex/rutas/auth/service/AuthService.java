@@ -30,7 +30,7 @@ public class AuthService {
     }
 
     public RegisterResponse register(RegisterRequest request) {
-        if (usuarioRepository.existsByEmail(request.email())) {
+        if (usuarioRepository.existsByCorreo(request.email())) {
             throw new DominioException("Ya existe un usuario con ese email", HttpStatus.CONFLICT);
         }
 
@@ -39,18 +39,18 @@ public class AuthService {
                 "Rol no válido: " + request.rolNombre(), HttpStatus.BAD_REQUEST));
 
         Usuario usuario = new Usuario();
-        usuario.setEmail(request.email());
+        usuario.setCorreo(request.email());
         usuario.setPasswordHash(passwordEncoder.encode(request.password()));
         usuario.setRol(rol);
         usuario.setActivo(true);
 
         Usuario guardado = usuarioRepository.save(usuario);
 
-        return new RegisterResponse(guardado.getId(), guardado.getEmail(), guardado.getRol().getNombre());
+        return new RegisterResponse(guardado.getId(), guardado.getCorreo(), guardado.getRol().getNombre());
     }
 
     public LoginResponse login(LoginRequest request) {
-        Usuario usuario = usuarioRepository.findByEmailAndActivoTrue(request.email())
+        Usuario usuario = usuarioRepository.findBycorreoAndActivoTrue(request.email())
             .orElseThrow(() -> new DominioException("Credenciales inválidas", HttpStatus.UNAUTHORIZED));
 
         if (!passwordEncoder.matches(request.password(), usuario.getPasswordHash())) {
@@ -58,8 +58,8 @@ public class AuthService {
         }
 
         try {
-            String accessToken = jwtService.generarToken(usuario.getEmail(), usuario.getRol().getNombre());
-            String refreshToken = refreshTokenService.generar(usuario.getEmail());
+            String accessToken = jwtService.generarToken(usuario.getCorreo(), usuario.getRol().getNombre());
+            String refreshToken = refreshTokenService.generar(usuario.getCorreo());
             return new LoginResponse(accessToken, refreshToken, 900);
         } catch (Exception e) {
             throw new DominioException("Error generando token", HttpStatus.INTERNAL_SERVER_ERROR);
@@ -70,11 +70,11 @@ public class AuthService {
         String email = refreshTokenService.obtenerEmail(request.refreshToken())
             .orElseThrow(() -> new DominioException("Refresh token inválido o expirado", HttpStatus.UNAUTHORIZED));
 
-        Usuario usuario = usuarioRepository.findByEmailAndActivoTrue(email)
+        Usuario usuario = usuarioRepository.findBycorreoAndActivoTrue(email)
             .orElseThrow(() -> new DominioException("Usuario no encontrado", HttpStatus.UNAUTHORIZED));
 
         try {
-            String nuevoAccessToken = jwtService.generarToken(usuario.getEmail(), usuario.getRol().getNombre());
+            String nuevoAccessToken = jwtService.generarToken(usuario.getCorreo(), usuario.getRol().getNombre());
             return new LoginResponse(nuevoAccessToken, request.refreshToken(), 900);
         } catch (Exception e) {
             throw new DominioException("Error generando token", HttpStatus.INTERNAL_SERVER_ERROR);

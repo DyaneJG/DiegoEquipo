@@ -8,7 +8,7 @@ import mx.edomex.rutas.shared.audit.BaseEntity;
 public class Usuario extends BaseEntity {
 
     @Column(nullable = false, unique = true)
-    private String email;
+    private String correo;
 
     @Column(name = "password_hash", nullable = false)
     private String passwordHash;
@@ -20,8 +20,8 @@ public class Usuario extends BaseEntity {
     @Column(nullable = false)
     private boolean activo = true;
 
-    public String getEmail() { return email; }
-    public void setEmail(String email) { this.email = email; }
+    public String getCorreo() { return correo; }
+    public void setCorreo(String correo) { this.correo = correo; }
     public String getPasswordHash() { return passwordHash; }
     public void setPasswordHash(String passwordHash) { this.passwordHash = passwordHash; }
     public Rol getRol() { return rol; }

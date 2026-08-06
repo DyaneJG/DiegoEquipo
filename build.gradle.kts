@@ -40,6 +40,7 @@ dependencies {
     runtimeOnly("io.jsonwebtoken:jjwt-jackson:0.12.6")
 	implementation("org.hibernate:hibernate-spatial:6.5.2.Final")
 	implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.6.0")
+	implementation("org.springframework.boot:spring-boot-starter-mail")
 }
 
 tasks.withType<Test> {

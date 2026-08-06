@@ -8,12 +8,12 @@ public class Rol {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Short id;
 
     @Column(nullable = false, unique = true)
     private String nombre;
 
-    public Long getId() { return id; }
+    public Short getId() { return id; }
     public String getNombre() { return nombre; }
     public void setNombre(String nombre) { this.nombre = nombre; }
 }
