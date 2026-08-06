@@ -41,6 +41,9 @@ dependencies {
 	implementation("org.hibernate:hibernate-spatial:6.5.2.Final")
 	implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.6.0")
 	runtimeOnly("com.h2database:h2")
+
+	implementation("com.google.zxing:core:3.5.3")
+    implementation("com.google.zxing:javase:3.5.3")
 }
 
 tasks.withType<Test> {
