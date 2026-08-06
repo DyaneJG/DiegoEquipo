@@ -10,7 +10,7 @@ Content-Type: application/json
   "placaVehiculo": "CDA-322-D",
   "estado": "DISPONIBLE",
   "correo": "Juan@correo.com",
-  "contrasena": "1234"
+  "contrasena": "1234se"
 }
 
 ### Actualizar estado de un repartidor existente
@@ -31,7 +31,7 @@ GET http://localhost:8080/api/repartidores/disponibles
 Accept: application/json
 
 ### Eliminar un repartidor por su ID
-DELETE http://localhost:8080/api/repartidores/2
+DELETE http://localhost:8080/api/repartidores/4
 
 ### 2. ZONA DE LOGÍSTICA
 
@@ -44,7 +44,7 @@ Content-Type: application/json
 
 {
   "repartidorId": 4,
-  "latitud": 70.5140,
+  "latitud": 90.5140,
   "longitud": -108.8805
 }
 
