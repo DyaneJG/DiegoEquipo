@@ -1,102 +1,123 @@
 package mx.edomex.rutas.pedidos.model;
 
-import jakarta.persistence.*;
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.OffsetDateTime;
+import java.util.UUID;
+
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+// Importación de tu módulo
 import mx.edomex.rutas.repartidores.model.Repartidor;
-import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "pedidos")
+@Table(name = "pedidos", schema = "test")
+@Data // Lombok: ¡Esto crea todos tus Getters y Setters automáticamente!
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class Pedido {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @GeneratedValue( strategy = GenerationType.UUID)
+    @Column( name ="id", nullable = false, updatable = false)
+    private UUID id;
 
-    @Column(name = "estado")
-    private String estado; // Aquí buscaremos los que digan "PAGADO"
+    @Column( name = "numero_pedido", length = 50, nullable = false, unique = true)
+    private String numeroPedido;
 
-    @Column(name = "direccion_destino")
-    private String direccionDestino;
+    @Column(name = "cliente_id", columnDefinition = "uuid", nullable = false)
+    private UUID clienteId;
 
+    @Column(name = "direccion_entrega_id", columnDefinition = "uuid", nullable = false)
+    private UUID direccionEntregaId;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "estado", length = 20, nullable = false)
+    @Builder.Default
+    private EstadoPedido estado = EstadoPedido.PENDIENTE;
+
+    // --- TUS CAMPOS DE TRACKING (Añadidos para que tu módulo no colapse) ---
     @Column(name = "latitud_destino")
     private Double latitudDestino;
 
     @Column(name = "longitud_destino")
     private Double longitudDestino;
 
-    @Column(name = "fecha_creacion")
-    private LocalDateTime fechaCreacion;
-
-    @Column(name = "telefono_cliente")
-    private String telefonoCliente;
-
-    // Relación: Muchos pedidos pueden pertenecer a un solo repartidor
+    // --- TU RELACIÓN CON REPARTIDOR ---
     @ManyToOne
     @JoinColumn(name = "repartidor_id")
     private Repartidor repartidor;
+    // -----------------------------------------------------------------------
 
+    @Column(name = "subtotal", precision = 12, scale = 2, nullable = false)
+    private BigDecimal subtotal;
 
-    public Long getId() {
-        return id;
-    }
+    @Column(name = "iva", precision = 12, scale = 2, nullable = false)
+    private BigDecimal iva;
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+    @Column(name = "cargo_entrega", precision = 8, scale = 2)
+    private BigDecimal cargoEntrega;
 
-    public String getEstado() {
-        return estado;
-    }
+    @Column(name = "total", precision = 12, scale = 2, nullable = false)
+    private BigDecimal total;
 
-    public void setEstado(String estado) {
-        this.estado = estado;
-    }
+    @Column(name = "notas", columnDefinition = "text")
+    private String notas;
 
-    public String getDireccionDestino() {
-        return direccionDestino;
-    }
+    @Column(name = "ventana_inicio")
+    private LocalTime ventanaInicio;
 
-    public void setDireccionDestino(String direccionDestino) {
-        this.direccionDestino = direccionDestino;
-    }
+    @Column(name = "ventana_fin")
+    private LocalTime ventanaFin;
 
-    public Double getLatitudDestino() {
-        return latitudDestino;
-    }
+    @Column(name = "fecha_entrega_programada")
+    private LocalDate fechaEntregaProgramada;
 
-    public void setLatitudDestino(Double latitudDestino) {
-        this.latitudDestino = latitudDestino;
-    }
+    @Column(name = "fecha_entrega_real", columnDefinition = "timestamptz")
+    private OffsetDateTime fechaEntregaReal;
 
-    public Double getLongitudDestino() {
-        return longitudDestino;
-    }
+    @Column(name = "cancelado_motivo", columnDefinition = "text")
+    private String canceladoMotivo;
 
-    public void setLongitudDestino(Double longitudDestino) {
-        this.longitudDestino = longitudDestino;
-    }
+    @CreationTimestamp
+    @Column(name = "creado_en", columnDefinition = "timestamptz", updatable = false)
+    private OffsetDateTime creadoEn;
 
-    public LocalDateTime getFechaCreacion() {
-        return fechaCreacion;
-    }
-
-    public void setFechaCreacion(LocalDateTime fechaCreacion) {
-        this.fechaCreacion = fechaCreacion;
-    }
-
-    public String getTelefonoCliente() {
-        return telefonoCliente;
-    }
-
-    public void setTelefonoCliente(String telefonoCliente) {
-        this.telefonoCliente = telefonoCliente;
-    }
-
-    public Repartidor getRepartidor() {
-        return repartidor;
-    }
-
-    public void setRepartidor(Repartidor repartidor) {
-        this.repartidor = repartidor;
-    }
+    @UpdateTimestamp
+    @Column(name = "actualizado_en", columnDefinition = "timestamptz")
+    private OffsetDateTime actualizadoEn;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    }
