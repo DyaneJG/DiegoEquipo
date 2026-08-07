@@ -43,27 +43,33 @@ public class PagoController {
 
     }
 
+    /*
+     ============================================================
+     MÉTODO COMENTADO TEMPORALMENTE PARA EVITAR ERRORES
+     (Falta importar UUID, el modelo Pago y el PagoRepository)
+     ============================================================
+
     @GetMapping("/{id}")
-public ResponseEntity<PagoResponse> obtenerPago(
-        @PathVariable UUID id){
+    public ResponseEntity<PagoResponse> obtenerPago(
+            @PathVariable UUID id){
 
-    Pago pago = pagoRepository.findById(id)
-            .orElseThrow(() ->
-                    new RuntimeException("Pago no encontrado"));
+        Pago pago = pagoRepository.findById(id)
+                .orElseThrow(() ->
+                        new RuntimeException("Pago no encontrado"));
 
-    PagoResponse response = new PagoResponse();
+        PagoResponse response = new PagoResponse();
 
-    response.setId(pago.getId());
-    response.setEstado(pago.getEstado().name());
-    response.setReferencia(
-            pago.getReferenciaExterna());
-    response.setQr(
-            pago.getQrCodigo());
-    response.setExpira(
-            pago.getQrExpiraAt());
+        response.setId(pago.getId());
+        response.setEstado(pago.getEstado().name());
+        response.setReferencia(
+                pago.getReferenciaExterna());
+        response.setQr(
+                pago.getQrCodigo());
+        response.setExpira(
+                pago.getQrExpiraAt());
 
-    return ResponseEntity.ok(response);
+        return ResponseEntity.ok(response);
 
-}
-
+    }
+    */
 }

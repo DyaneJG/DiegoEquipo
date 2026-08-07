@@ -17,7 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Table(name = "repartidores")
+@Table(name = "repartidores", schema = "logistica")
 public class Repartidor {
 
     @Id

@@ -1,5 +1,6 @@
 package mx.edomex.rutas.rutas.controller;
 
+import java.util.UUID;
 import mx.edomex.rutas.rutas.model.Ruta;
 import mx.edomex.rutas.rutas.service.RutaService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,9 +14,9 @@ public class RutaController {
     @Autowired
     private RutaService rutaService;
 
-    // Escuchará peticiones POST en /api/rutas/asignar/1001
+    // Escuchará peticiones POST en /api/rutas/asignar/550e8400-e29b-41d4-a716-446655440000
     @PostMapping("/asignar/{pedidoId}")
-    public ResponseEntity<String> asignarRuta(@PathVariable Long pedidoId) {
+    public ResponseEntity<String> asignarRuta(@PathVariable UUID pedidoId) {
         try {
             Ruta nuevaRuta = rutaService.asignarRepartidorAPedido(pedidoId);
 
@@ -24,14 +25,14 @@ public class RutaController {
                     + " va en camino.");
 
         } catch (RuntimeException e) {
-            // Si no hay repartidores o el pedido no está PAGADO, mandamos el error
+            // Si no hay repartidores o el pedido no está CONFIRMADO, mandamos el error
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 
-    // Escuchará peticiones POST en /api/rutas/completar/1001
+    // Escuchará peticiones POST en /api/rutas/completar/550e8400-e29b-41d4-a716-446655440000
     @PostMapping("/completar/{pedidoId}")
-    public ResponseEntity<String> completarEntrega(@PathVariable Long pedidoId) {
+    public ResponseEntity<String> completarEntrega(@PathVariable UUID pedidoId) {
         try {
             // Llamamos a la lógica para cerrar la entrega
             String mensaje = rutaService.finalizarEntrega(pedidoId);

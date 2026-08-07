@@ -50,7 +50,7 @@ public class PagoService {
                         new RuntimeException("Método CoDi no encontrado"));
 
         // Genera referencia
-        SString referencia =
+        String referencia =
         proveedorPago.generarReferencia();
 
 String contenidoQR =

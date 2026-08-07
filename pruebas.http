@@ -35,18 +35,20 @@ DELETE http://localhost:8080/api/repartidores/4
 
 ### 2. ZONA DE LOGÍSTICA
 
-### PASO 1: Asignar un pedido existente a un repartidor disponible
-POST http://localhost:8080/api/rutas/asignar/1002
+### Asignar ruta al Pedido
+POST http://localhost:8080/api/rutas/asignar/550e8400-e29b-41d4-a716-446655440001
+Content-Type: application/json
 
 ### PASO 2: Simular que el repartidor asignado va en camino (Tracking)
 POST http://localhost:8080/api/tracking/actualizar
 Content-Type: application/json
 
 {
-  "repartidorId": 4,
-  "latitud": 90.5140,
+  "repartidorId": 6,
+  "latitud": 100.5140,
   "longitud": -108.8805
 }
 
 ### PASO 3: Finalizar la entrega del pedido
-POST http://localhost:8080/api/rutas/completar/1002
+POST http://localhost:8080/api/rutas/completar/550e8400-e29b-41d4-a716-446655440002
+Content-Type: application/json

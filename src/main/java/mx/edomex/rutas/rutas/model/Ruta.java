@@ -5,7 +5,7 @@ import mx.edomex.rutas.pedidos.model.Pedido;
 import mx.edomex.rutas.repartidores.model.Repartidor;
 
 @Entity
-@Table(name = "rutas")
+@Table(name = "rutas", schema = "logistica")
 public class Ruta {
 
     @Id

@@ -7,7 +7,8 @@ import mx.edomex.rutas.repartidores.model.Repartidor;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "ubicaciones")
+@Table(name = "ubicaciones", schema = "logistica")
+
 public class Ubicacion {
 
     @Id

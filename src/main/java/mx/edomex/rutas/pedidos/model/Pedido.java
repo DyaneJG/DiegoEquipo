@@ -16,20 +16,15 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-// Importación de tu módulo
-import mx.edomex.rutas.repartidores.model.Repartidor;
-
 @Entity
 @Table(name = "pedidos", schema = "test")
-@Data // Lombok: ¡Esto crea todos tus Getters y Setters automáticamente!
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
@@ -53,19 +48,6 @@ public class Pedido {
     @Column(name = "estado", length = 20, nullable = false)
     @Builder.Default
     private EstadoPedido estado = EstadoPedido.PENDIENTE;
-
-    // --- TUS CAMPOS DE TRACKING (Añadidos para que tu módulo no colapse) ---
-    @Column(name = "latitud_destino")
-    private Double latitudDestino;
-
-    @Column(name = "longitud_destino")
-    private Double longitudDestino;
-
-    // --- TU RELACIÓN CON REPARTIDOR ---
-    @ManyToOne
-    @JoinColumn(name = "repartidor_id")
-    private Repartidor repartidor;
-    // -----------------------------------------------------------------------
 
     @Column(name = "subtotal", precision = 12, scale = 2, nullable = false)
     private BigDecimal subtotal;
@@ -105,19 +87,3 @@ public class Pedido {
     @Column(name = "actualizado_en", columnDefinition = "timestamptz")
     private OffsetDateTime actualizadoEn;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    }

@@ -1,17 +1,35 @@
 -- 0. Limpiar datos
-TRUNCATE TABLE ubicaciones, pedidos, repartidores CASCADE;
-TRUNCATE TABLE ubicaciones, pedidos, repartidores, rutas CASCADE;
--- 1. Insertar Repartidores (Ahora con correo y contraseña, respetando tu estado DISPONIBLE inicial)
+TRUNCATE TABLE ubicaciones, test.pedidos, repartidores, rutas CASCADE;
+
+-- 1. Insertar Repartidores
 INSERT INTO repartidores (id, nombre_completo, estado, placa_vehiculo, telefono, correo, contrasena)
-VALUES (6, 'Carlos Sánchez', 'DISPONIBLE', 'NMP-2026', '5512345678', 'carlos@correo.com', '$2a$10$EixZaYVK1fsbw1ZfbX3OXePaWxn96p36WQoeG6Lruj3vjQsQnEsg2'),
-       (4, 'Luis Fernando', 'DISPONIBLE', 'RUT-9988', '5598765432', 'luis@correo.com', '$2a$10$EixZaYVK1fsbw1ZfbX3OXePaWxn96p36WQoeG6Lruj3vjQsQnEsg2');
+VALUES (6, 'Carlos Sánchez', 'DISPONIBLE', 'NMP-2026', '5512345678', 'carlos@correo.com', '$2a$10$EixZaYVK1fsbw1ZfbX30XePaWxn96p36WQo...'),
+       (4, 'Luis Fernando', 'DISPONIBLE', 'RUT-9988', '5598765432', 'luis@correo.com', '$2a$10$EixZaYVK1fsbw1ZfbX30XePaWxn96p36WQo...');
 
--- 2. Insertar Pedidos (Ahora con coordenadas, fecha, teléfono y el id del repartidor asignado)
-INSERT INTO pedidos (id, direccion_destino, latitud_destino, longitud_destino, fecha_creacion, telefono_cliente, estado, repartidor_id)
-VALUES (1001, 'Av. Juárez Sur, Texcoco Centro', 19.5111, -98.8811, CURRENT_TIMESTAMP, '5500000001', 'PAGADO', 6),
-       (1002, 'Avenida del Trabajo, Chiautla', 19.5444, -98.8855, CURRENT_TIMESTAMP, '5500000002', 'PAGADO', 4);
+-- 2. Insertar Pedidos
+-- Usamos UUIDs fijos para el ID del pedido, e IDs aleatorios para el cliente y dirección.
+INSERT INTO test.pedidos (
+    id, numero_pedido, cliente_id, direccion_entrega_id,
+    estado, subtotal, iva, total
+) VALUES
+      (
+          '550e8400-e29b-41d4-a716-446655440001', -- <- USAR ESTE UUID EN .HTTP (Pedido 1)
+          'PED-TEX-001',
+          gen_random_uuid(), -- Simula un cliente
+          gen_random_uuid(), -- Simula una dirección en Texcoco
+          'CONFIRMADO',
+          100.00, 16.00, 116.00
+      ),
+      (
+          '550e8400-e29b-41d4-a716-446655440002', -- <- USAR ESTE UUID EN .HTTP (Pedido 1)
+          'PED-CHI-002',
+          gen_random_uuid(),
+          gen_random_uuid(), -- Simula una dirección en Chiautla
+          'CONFIRMADO',
+          200.00, 32.00, 232.00
+      );
 
--- 3. Insertar Ubicaciones (Esto se queda igual)
+-- 3. Insertar Ubicaciones }
 INSERT INTO ubicaciones (id, fecha_hora, latitud, longitud, repartidor_id)
 VALUES (1, CURRENT_TIMESTAMP, 19.5135, -98.8798, 6),
        (2, CURRENT_TIMESTAMP, 19.5452, -98.8872, 4);
