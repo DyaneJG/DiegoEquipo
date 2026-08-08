@@ -39,105 +39,101 @@ public class PedidoController {
   private final PedidoService pedidoService;
 
   @PostMapping
-  // TODO: solucionar error que impide realizar más un registro en la bd
+  // crear un pedido en la bd
   public ResponseEntity<PedidoResponse> crearPedido(@Valid @RequestBody PedidoRequest request) {
     log.info("Solicitud POST /api/pedidos - Crear pedido");
     PedidoResponse response = pedidoService.crearPedido(request);
     return new ResponseEntity<>(response, HttpStatus.CREATED);
   }
-
+  // endpoint verificado
   @GetMapping("/{id}")
-    public ResponseEntity<PedidoResponse> obtenerPedidoPorId(@PathVariable UUID id) {
-        log.info("Solicitud GET /api/pedidos/{}", id);
-        PedidoResponse response = pedidoService.obtenerPedidoPorId(id);
-        return ResponseEntity.ok(response);
-    }
-
-    @GetMapping("/numero/{numeroPedido}")
-    public ResponseEntity<PedidoResponse> obtenerPedidoPorNumero(@PathVariable String numeroPedido) {
-        log.info("Solicitud GET /api/pedidos/numero/{}", numeroPedido);
-        PedidoResponse response = pedidoService.obtenerPedidoPorNumero(numeroPedido);
-        return ResponseEntity.ok(response);
-    }
-
-    @PutMapping("/{id}")
-    public ResponseEntity<PedidoResponse> actualizarPedido(
-            @PathVariable UUID id,
-            @Valid @RequestBody PedidoRequest request) {
-        log.info("Solicitud PUT /api/pedidos/{}", id);
-        PedidoResponse response = pedidoService.actualizarPedido(id, request);
-        return ResponseEntity.ok(response);
-    }
-
-    @PatchMapping("/{id}/estado")
-    public ResponseEntity<PedidoResponse> cambiarEstado(
-            @PathVariable UUID id,
-            @RequestParam EstadoPedido estado) {
-        log.info("Solicitud PATCH /api/pedidos/{}/estado?estado={}", id, estado);
-        PedidoResponse response = pedidoService.cambiarEstado(id, estado);
-        return ResponseEntity.ok(response);
-    }
-
-    @PatchMapping("/{id}/cancelar")
-    public ResponseEntity<Void> cancelarPedido(
-            @PathVariable UUID id,
-            @RequestParam(required = true) String motivo) {
-        log.info("Solicitud PATCH /api/pedidos/{}/cancelar", id);
-        pedidoService.cancelarPedido(id, motivo);
-        return ResponseEntity.noContent().build();
-    }
-
-    @PatchMapping("/{id}/entregar")
-    public ResponseEntity<PedidoResponse> marcarComoEntregado(@PathVariable UUID id) {
-        log.info("Solicitud PATCH /api/pedidos/{}/entregar", id);
-        PedidoResponse response = pedidoService.marcarComoEntregado(id);
-        return ResponseEntity.ok(response);
-    }
-
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> eliminarPedido(@PathVariable UUID id) {
-        log.info("Solicitud DELETE /api/pedidos/{}", id);
-        pedidoService.eliminarPedido(id);
-        return ResponseEntity.noContent().build();
-    }
-
-    @GetMapping
-    public ResponseEntity<Page<PedidoResponse>> listarPedidos(
-            @PageableDefault(size = 20, sort = "creadoEn", direction = Sort.Direction.DESC) Pageable pageable) {
-        log.info("Solicitud GET /api/pedidos - Listar pedidos");
-        Page<PedidoResponse> response = pedidoService.listarPedidos(pageable);
-        return ResponseEntity.ok(response);
-    }
-
-    @GetMapping("/cliente/{clienteId}")
-    public ResponseEntity<List<PedidoResponse>> listarPedidosPorCliente(@PathVariable UUID clienteId) {
-        log.info("Solicitud GET /api/pedidos/cliente/{}", clienteId);
-        List<PedidoResponse> response = pedidoService.listarPedidosPorCliente(clienteId);
-        return ResponseEntity.ok(response);
-    }
-
-    @GetMapping("/estado/{estado}")
-    public ResponseEntity<List<PedidoResponse>> listarPedidosPorEstado(@PathVariable EstadoPedido estado) {
-        log.info("Solicitud GET /api/pedidos/estado/{}", estado);
-        List<PedidoResponse> response = pedidoService.listarPedidosPorEstado(estado);
-        return ResponseEntity.ok(response);
-    }
-
-    @GetMapping("/fechas")
-    public ResponseEntity<List<PedidoResponse>> listarPedidosPorFechas(
-            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fechaInicio,
-            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fechaFin) {
-        log.info("Solicitud GET /api/pedidos/fechas?fechaInicio={}&fechaFin={}", fechaInicio, fechaFin);
-        List<PedidoResponse> response = pedidoService.listarPedidosPorFechas(fechaInicio, fechaFin);
-        return ResponseEntity.ok(response);
-    }
-
-    @PostMapping("/filtrar")
-    public ResponseEntity<Page<PedidoResponse>> filtrarPedidos(
-            @RequestBody PedidoFilter filtro,
-            @PageableDefault(size = 20, sort = "creadoEn", direction = Sort.Direction.DESC) Pageable pageable) {
-        log.info("Solicitud POST /api/pedidos/filtrar");
-        Page<PedidoResponse> response = pedidoService.filtrarPedidos(filtro, pageable);
-        return ResponseEntity.ok(response);
-    }
+  public ResponseEntity<PedidoResponse> obtenerPedidoPorId(@PathVariable("id") UUID id) {
+    log.info("Solicitud GET /api/pedidos/{}", id);
+    PedidoResponse response = pedidoService.obtenerPedidoPorId(id);
+    return ResponseEntity.ok(response);
+  }
+  // endpoint verificado
+  @GetMapping("/numero/{numeroPedido}")
+  public ResponseEntity<PedidoResponse> obtenerPedidoPorNumero(@PathVariable("numeroPedido") String numeroPedido) {
+    log.info("Solicitud GET /api/pedidos/numero/{}", numeroPedido);
+    PedidoResponse response = pedidoService.obtenerPedidoPorNumero(numeroPedido);
+    return ResponseEntity.ok(response);
+  }
+  // endpoint verificado
+  @PutMapping("/{id}")
+  public ResponseEntity<PedidoResponse> actualizarPedido(@PathVariable("id") UUID id,
+      @Valid @RequestBody PedidoRequest request) {
+    log.info("Solicitud PUT /api/pedidos/{}", id);
+    PedidoResponse response = pedidoService.actualizarPedido(id, request);
+    return ResponseEntity.ok(response);
+  }
+  // endpoint verificado
+  @PatchMapping("/{id}/estado")
+  public ResponseEntity<PedidoResponse> cambiarEstado(@PathVariable("id") UUID id,
+      @RequestParam("estado") EstadoPedido estado) {
+    log.info("Solicitud PATCH /api/pedidos/{}/estado?estado={}", id, estado);
+    PedidoResponse response = pedidoService.cambiarEstado(id, estado);
+    return ResponseEntity.ok(response);
+  }
+  // endpoint verificado
+  @PatchMapping("/{id}/cancelar")
+  public ResponseEntity<Void> cancelarPedido(@PathVariable("id") UUID id, @RequestParam("motivo") String motivo) {
+    log.info("Solicitud PATCH /api/pedidos/{}/cancelar", id);
+    pedidoService.cancelarPedido(id, motivo);
+    return ResponseEntity.noContent().build();
+  }
+  // endpoint verificado
+  @PatchMapping("/{id}/entregar")
+  public ResponseEntity<PedidoResponse> marcarComoEntregado(@PathVariable("id") UUID id) {
+    log.info("Solicitud PATCH /api/pedidos/{}/entregar", id);
+    PedidoResponse response = pedidoService.marcarComoEntregado(id);
+    return ResponseEntity.ok(response);
+  }
+  // endpoint verificado
+  @DeleteMapping("/{id}")
+  public ResponseEntity<Void> eliminarPedido(@PathVariable("id") UUID id) {
+    log.info("Solicitud DELETE /api/pedidos/{}", id);
+    pedidoService.eliminarPedido(id);
+    return ResponseEntity.noContent().build();
+  }
+  // endpoint verificado
+  @GetMapping
+  public ResponseEntity<Page<PedidoResponse>> listarPedidos(
+      @PageableDefault(size = 20, sort = "creadoEn", direction = Sort.Direction.DESC) Pageable pageable) {
+    log.info("Solicitud GET /api/pedidos - Listar pedidos");
+    Page<PedidoResponse> response = pedidoService.listarPedidos(pageable);
+    return ResponseEntity.ok(response);
+  }
+  // endpoint verificado
+  @GetMapping("/cliente/{clienteId}")
+  public ResponseEntity<List<PedidoResponse>> listarPedidosPorCliente(@PathVariable("clienteId") UUID clienteId) {
+    log.info("Solicitud GET /api/pedidos/cliente/{}", clienteId);
+    List<PedidoResponse> response = pedidoService.listarPedidosPorCliente(clienteId);
+    return ResponseEntity.ok(response);
+  }
+  // endpoint verificado
+  @GetMapping("/estado/{estado}")
+  public ResponseEntity<List<PedidoResponse>> listarPedidosPorEstado(@PathVariable("estado") EstadoPedido estado) {
+    log.info("Solicitud GET /api/pedidos/estado/{}", estado);
+    List<PedidoResponse> response = pedidoService.listarPedidosPorEstado(estado);
+    return ResponseEntity.ok(response);
+  }
+  // endpoint verificado
+  @GetMapping("/fechas")
+  public ResponseEntity<List<PedidoResponse>> listarPedidosPorFechas(
+      @RequestParam("fechaInicio") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fechaInicio,
+      @RequestParam("fechaFin") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fechaFin) {
+    log.info("Solicitud GET /api/pedidos/fechas?fechaInicio={}&fechaFin={}", fechaInicio, fechaFin);
+    List<PedidoResponse> response = pedidoService.listarPedidosPorFechas(fechaInicio, fechaFin);
+    return ResponseEntity.ok(response);
+  }
+  // endpoint verificado
+  @PostMapping("/filtrar")
+  public ResponseEntity<Page<PedidoResponse>> filtrarPedidos(
+      @RequestBody PedidoFilter filtro,
+      @PageableDefault(size = 20, sort = "creadoEn", direction = Sort.Direction.DESC) Pageable pageable) {
+    log.info("Solicitud POST /api/pedidos/filtrar");
+    Page<PedidoResponse> response = pedidoService.filtrarPedidos(filtro, pageable);
+    return ResponseEntity.ok(response);
+  }
 }
