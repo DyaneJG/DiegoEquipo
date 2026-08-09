@@ -89,6 +89,8 @@ public class PedidoServiceImplementation implements PedidoService{
     pedidoExistente.setTotal(calcularTotal(request.getSubtotal(), request.getIva(), request.getCargoEntrega()));
     pedidoExistente.setVentanaInicio(request.getVentanaInicio());
     pedidoExistente.setVentanaFin(request.getVentanaFin());
+    pedidoExistente.setNotas(request.getNotas());
+    pedidoExistente.setFechaEntregaProgramada(request.getFechaEntregaProgramada());
 
     Pedido pedidoActualizado = pedidoRepository.save(pedidoExistente);
     log.info("Pedido actualizado correctamente ID: {}", id);
