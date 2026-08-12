@@ -13,6 +13,6 @@ public interface NotificacionRepository extends JpaRepository<Notificacion, UUID
     // Buscar todas las notificaciones de un usuario específico
     List<Notificacion> findByUsuarioId(UUID usuarioId);
     
-    // Buscar notificaciones por su estado (ej. "pendiente", "fallido")
+    // Buscar notificaciones por su estado 
     List<Notificacion> findByEstado(String estado);
 }

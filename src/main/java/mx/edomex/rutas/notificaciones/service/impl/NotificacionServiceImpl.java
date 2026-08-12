@@ -24,7 +24,7 @@ public class NotificacionServiceImpl implements NotificacionService {
 
     @Override
     public void enviarCorreo(CorreoRequestDTO request) {
-        // 1. Preparamos el registro para la base de datos
+        //se Prepara el registro para la base de datos
         Notificacion notificacion = new Notificacion();
         notificacion.setUsuarioId(request.usuarioId());
         notificacion.setPedidoId(request.pedidoId());
@@ -52,7 +52,7 @@ public class NotificacionServiceImpl implements NotificacionService {
             notificacion.setEstado("fallido");
             notificacion.setErrorDetalle(e.getMessage());
         } finally {
-            //Guardamos el historial en la BD pase lo que pase
+            //se guarda el historial en la BD pase lo que pase
             notificacionRepository.save(notificacion);
         }
     }
