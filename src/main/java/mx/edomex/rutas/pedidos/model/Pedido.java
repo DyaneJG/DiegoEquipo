@@ -23,7 +23,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "pedidos", schema = "test")
+@Table(name = "pedidos")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -35,7 +35,7 @@ public class Pedido {
   @Column( name ="id", nullable = false, updatable = false)
   private UUID id;
   
-  @Column( name = "numero_pedido", length = 50, nullable = false, unique = true)
+  @Column( name = "numero_pedido", length = 25, nullable = false, unique = true)
   private String numeroPedido;
 
   @Column(name = "cliente_id", columnDefinition = "uuid", nullable = false)

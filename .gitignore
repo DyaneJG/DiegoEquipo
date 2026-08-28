@@ -58,3 +58,6 @@ application-local.properties
 .DS_Store
 Thumbs.db
 
+# archivos http para pruebas
+pedidos.http
+pagos.http
