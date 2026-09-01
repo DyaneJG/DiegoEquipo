@@ -9,13 +9,16 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.List;
 
+/**
+ * Implementación de las reglas de negocio para el rastreo
+ * Aquí es donde esta la inteligencia de la aplicación antes de tocar la base de datos.
+ */
 @Service
 public class UbicacionServiceImpl implements UbicacionService {
 
     private final UbicacionRepository ubicacionRepository;
     private final RepartidorRepository repartidorRepository;
 
-    // Inyectamos ambos repositorios para buscar al repartidor y guardar la ubicación
     public UbicacionServiceImpl(UbicacionRepository ubicacionRepository, RepartidorRepository repartidorRepository) {
         this.ubicacionRepository = ubicacionRepository;
         this.repartidorRepository = repartidorRepository;
@@ -23,26 +26,34 @@ public class UbicacionServiceImpl implements UbicacionService {
 
     @Override
     public Ubicacion registrarUbicacion(Long repartidorId, Ubicacion ubicacion) {
-        // 1. Buscando al repartidor por su ID
+        // RN 1: Validar integridad. No podemos guardar la coordenada de un fantasma
         Repartidor repartidor = repartidorRepository.findById(repartidorId)
                 .orElseThrow(() -> new RuntimeException("Error: Repartidor no encontrado con el ID: " + repartidorId));
 
-        // 2. Asignando al repartidor la ubicacion
         ubicacion.setRepartidor(repartidor);
 
-        // 3. Forzamos la hora exacta en la que llega el registro
+        // RN 2: Confiabilidad del tiempo.
+        // Sobreescribimos la fecha con la del servidor para evitar que el celular
+        // del repartidor envíe una hora falsa si la tiene mal configurada
         ubicacion.setFechaHora(LocalDateTime.now());
 
-        // 4. Guardando en SQL
         return ubicacionRepository.save(ubicacion);
     }
+
     @Override
     public List<Ubicacion> obtenerHistorialPorRepartidor(Long repartidorId) {
-        // 1. Verificando que el repartidor exista primero usando el repartidorRepository
+        // Validamos la existencia antes de intentar buscar su historial
         repartidorRepository.findById(repartidorId)
                 .orElseThrow(() -> new RuntimeException("Error: Repartidor no encontrado con el ID: " + repartidorId));
 
-        // 2. Historial ordenado del más reciente al más antiguo
         return ubicacionRepository.findByRepartidorIdOrderByFechaHoraDesc(repartidorId);
+    }
+
+    @Override
+    public void limpiarHistorialDelRepartidor(Long repartidorId) {
+        repartidorRepository.findById(repartidorId)
+                .orElseThrow(() -> new RuntimeException("Error: Repartidor no encontrado con el ID: " + repartidorId));
+
+        ubicacionRepository.deleteByRepartidorId(repartidorId);
     }
 }

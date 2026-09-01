@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Monitoreo de Repartidores</title>
+
+    <!-- 1. Leaflet: Elegimos esta librería porque es más ligera que Google Maps para renderizar marcadores dinámicos -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+    <!-- 2. SockJS y STOMP:
+         - SockJS nos da resiliencia (si el navegador o red no soporta WebSockets puros, hace un 'fallback' automático).
+         - STOMP nos permite usar un patrón de Publicador/Suscriptor (canales) sobre el WebSocket. -->
+    <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
+
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; background-color: #f4f4f9;}
+        #miMapa { height: 500px; width: 80%; margin: 20px auto; border: 2px solid #ccc; border-radius: 8px;}
+
+        /* Transición suave para el indicador visual de latido de red */
+        #estado { color: gray; font-weight: bold; font-size: 1.2em; transition: color 0.3s ease; }
+    </style>
+</head>
+<body>
+
+<h2>📍 Rastreo en Tiempo Real - Repartidor 3</h2>
+<!-- Este texto servirá como un 'monitor cardíaco' de la conexión -->
+<p id="estado">Esperando conexión con el servidor...</p>
+
+<div id="miMapa"></div>
+
+<script>
+    // --- A. INICIALIZACIÓN DEL MAPA ---
+    // Centramos la vista inicial (ej. coordenadas base de la empresa)
+    var mapa = L.map('miMapa').setView([19.5443, -98.8796], 16);
+
+    // Capa visual del mapa (proveedor gratuito OpenStreetMap)
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '© OpenStreetMap contributors'
+    }).addTo(mapa);
+
+    // Creamos el marcador del repartidor de forma global para poder actualizar su posición más adelante
+    var marcadorRepartidor = L.marker([19.5443, -98.8796]).addTo(mapa);
+    marcadorRepartidor.bindPopup("<b>Repartidor 3</b><br>Esperando movimiento...").openPopup();
+
+    // --- B. INDICADOR VISUAL DE ACTIVIDAD (LATIDO) ---
+    // Usamos rotación de colores para confirmar visualmente al monitorista que
+    // los datos siguen llegando en tiempo real, incluso si el repartidor está detenido en un semáforo.
+    var coloresLatido = ['blue', 'purple', '#0097a7'];
+    var indiceColor = 0;
+
+    // --- C. ESTABLECIMIENTO DEL TÚNEL WEBSOCKET ---
+    // Apuntamos al endpoint configurado en la clase de configuración de Spring Boot
+    var socket = new SockJS('http://192.168.1.251:8080/ws-tracking-sockjs');
+    var stompClient = Stomp.over(socket);
+
+    stompClient.connect({}, function (frame) {
+        document.getElementById('estado').innerText = "Conectado al servidor. Esperando coordenadas...";
+        document.getElementById('estado').style.color = "green";
+
+        // --- D. SUSCRIPCIÓN AL CANAL DEL REPARTIDOR ---
+        // Escuchamos EXCLUSIVAMENTE el tópico del repartidor 3.
+        // Cualquier mensaje que el TrackingController haga 'convertAndSend' hacia esta ruta, detonará esta función.
+        stompClient.subscribe('/topic/repartidor/3', function (mensaje) {
+
+            // Extraemos el DTO que Spring Boot convirtió a JSON automáticamente
+            var ubicacion = JSON.parse(mensaje.body);
+            var lat = ubicacion.latitud;
+            var lon = ubicacion.longitud;
+
+            // 1. Animación del "Latido" en el texto de estado
+            var colorElegido = coloresLatido[indiceColor];
+            document.getElementById('estado').innerText = "¡Actualizado! Lat: " + lat + ", Lon: " + lon;
+            document.getElementById('estado').style.color = colorElegido;
+            indiceColor = (indiceColor + 1) % coloresLatido.length;
+
+            // 2. Actualización de Mapa
+            // Movemos el pin a la nueva coordenada
+            marcadorRepartidor.setLatLng([lat, lon]);
+            // Centramos la cámara del mapa persiguiendo al repartidor
+            mapa.panTo([lat, lon]);
+
+            // Actualizamos la información del cuadro de texto del pin
+            marcadorRepartidor.getPopup().setContent("<b>Repartidor 3</b><br>Lat: " + lat + "<br>Lon: " + lon);
+        });
+    }, function(error) {
+        // Manejo de caídas de red para alertar al monitorista
+        document.getElementById('estado').innerText = "Error de conexión con el servidor de rastreo";
+        document.getElementById('estado').style.color = "red";
+    });
+</script>
+
+</body>
+</html>

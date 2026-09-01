@@ -5,11 +5,11 @@ POST http://localhost:8080/api/repartidores
 Content-Type: application/json
 
 {
-  "nombreCompleto": "Juan Manuel",
-  "telefono": "5643648911",
+  "nombreCompleto": "Diego Hernandez",
+  "telefono": "1234567890",
   "placaVehiculo": "CDA-322-D",
   "estado": "DISPONIBLE",
-  "correo": "Juan@correo.com",
+  "correo": "Diego@correo.com",
   "contrasena": "1234se"
 }
 
@@ -31,7 +31,7 @@ GET http://localhost:8080/api/repartidores/disponibles
 Accept: application/json
 
 ### Eliminar un repartidor por su ID
-DELETE http://localhost:8080/api/repartidores/4
+DELETE http://localhost:8080/api/repartidores/2
 
 ### 2. ZONA DE LOGÍSTICA
 
@@ -39,15 +39,41 @@ DELETE http://localhost:8080/api/repartidores/4
 POST http://localhost:8080/api/rutas/asignar/550e8400-e29b-41d4-a716-446655440001
 Content-Type: application/json
 
-### PASO 2: Simular que el repartidor asignado va en camino (Tracking)
+### TRACKING GPS SIMULADO: Saliendo del almacén
 POST http://localhost:8080/api/tracking/actualizar
 Content-Type: application/json
 
 {
   "repartidorId": 6,
-  "latitud": 100.5140,
-  "longitud": -108.8805
+  "latitud": 19.5100,
+  "longitud": -98.8800
 }
+
+### GPS SIMULADO: Avanzando unas cuadras
+POST http://localhost:8080/api/tracking/actualizar
+Content-Type: application/json
+
+{
+  "repartidorId": 6,
+  "latitud": 19.5120,
+  "longitud": -98.8810
+}
+
+### GPS SIMULADO: Llegando a su destino
+POST http://localhost:8080/api/tracking/actualizar
+Content-Type: application/json
+
+{
+  "repartidorId": 6,
+  "latitud": 19.5135,
+  "longitud": -98.8798
+}
+
+### Consultar el historial del repartidor Carlos (ID: 6)
+GET http://localhost:8080/api/repartidores/6/ubicaciones
+
+### Borrar el historial de pruebas del repartidor 6
+DELETE http://localhost:8080/api/tracking/limpiar/6
 
 ### PASO 3: Finalizar la entrega del pedido
 POST http://localhost:8080/api/rutas/completar/550e8400-e29b-41d4-a716-446655440002

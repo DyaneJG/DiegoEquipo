@@ -8,6 +8,13 @@ import java.util.Optional;
 
 @Repository
 public interface RutaRepository extends JpaRepository<Ruta, Long> {
-    // Este método buscará la ruta que le pertenezca a ese pedido en específico
+
+    /**
+     * Spring Data JPA construye automáticamente el query SQL
+     * SELECT * FROM rutas WHERE pedido_id = ?
+     *
+     * Usamos Optional<> para obligarnos a manejar el escenario donde
+     * el pedido aún no tiene una ruta asignada, evitando el NullPointerException
+     */
     Optional<Ruta> findByPedidoId(UUID pedidoId);
 }

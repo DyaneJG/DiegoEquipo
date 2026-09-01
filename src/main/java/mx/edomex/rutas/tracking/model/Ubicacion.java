@@ -3,12 +3,14 @@ package mx.edomex.rutas.tracking.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import mx.edomex.rutas.repartidores.model.Repartidor;
-
 import java.time.LocalDateTime;
 
+/**
+ * Entidad que mapea la tabla 'ubicaciones' en la base de datos PostgreSQL
+ * Representa un punto individual en el mapa
+ */
 @Entity
 @Table(name = "ubicaciones", schema = "logistica")
-
 public class Ubicacion {
 
     @Id
@@ -21,17 +23,25 @@ public class Ubicacion {
     @Column(nullable = false)
     private Double longitud;
 
-    // Hora y fecha exacta en la que se guardo la coordenada
+    // Se usa como marca de tiempo para saber exactamente a qué hora el repartidor
+    // estuvo en esta coordenada
     @Column(nullable = false)
     private LocalDateTime fechaHora;
-    //fetch = FetchType. LAZY, solo traera longitud, fecha y latitud de las ubicaciones
+
+    /**
+     * RELACIÓN: Muchos registros de ubicación pertenecen a Un repartidor.
+     * FetchType.LAZY: Optimización de base de datos. Evita traer todos los datos del repartidor
+     * (nombre, teléfono, etc.) cada vez que solo queremos ver una coordenada, ahorrando memoria.
+     */
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "repartidor_id", nullable = false)
-    @JsonIgnore // Evita que se haga un ciclo infinito al mostrar el JSON
+
+    // @JsonIgnore, evita el error de referencia circular
+    @JsonIgnore
     private Repartidor repartidor;
 
     public Ubicacion() {
-        this.fechaHora = LocalDateTime.now(); // Por defecto toma la hora actual
+        this.fechaHora = LocalDateTime.now(); // Por defecto asume el momento de creación
     }
 
     public Long getId() { return id; }
