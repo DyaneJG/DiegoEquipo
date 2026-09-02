@@ -1,0 +1,38 @@
+### Registrar un nuevo repartidor
+POST http://localhost:8080/api/repartidores
+Content-Type: application/json
+
+{
+  "nombreCompleto": "Perez Lopez",
+  "telefono": "5573648911",
+  "placaVehiculo": "ABC-122-D",
+  "estado": "DISPONIBLE"
+
+}
+### Actualizar estado del repartidor 11
+PUT http://localhost:8080/api/repartidores/11
+Content-Type: application/json
+
+{
+  "nombreCompleto": "Perez Lopez",
+  "telefono": "1234567890",
+  "placaVehiculo": "ABC-123-E",
+  "estado": "NO DISPONIBLE"
+}
+
+### Consultar repartidores disponibles
+GET http://localhost:8080/api/repartidores/disponibles
+Accept: application/json
+
+### Enviar ubicación GPS al repartidor
+POST http://localhost:8080/api/repartidores/1/ubicaciones
+Content-Type: application/json
+
+{
+  "latitud": 80.432608,
+  "longitud": -70.133209
+}
+
+### Obtener el historial de GPS del repartidor
+GET http://localhost:8080/api/repartidores/1/ubicaciones
+Accept: application/json
