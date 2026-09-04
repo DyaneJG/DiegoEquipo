@@ -5,6 +5,19 @@
     url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${DB_NAME:sistema_rm}
     username: ${DB_USER:rm_admin}
     password: ${DB_PASSWORD:rm_dev_local}
+  
+  spring:
+  mail: 
+    host: smtp.gmail.com
+    port: 587
+    username: holaqeadr37@gmail.com
+    password: azpumkbfkzhstmbh
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
   jpa:
     hibernate:
       ddl-auto: validate
@@ -22,3 +35,9 @@
 
 server:
   port: 8080
+
+jwt:
+  private-key: ${JWT_PRIVATE_KEY_PATH:file:./keys/private_key.pem}
+  public-key: ${JWT_PUBLIC_KEY_PATH:file:./keys/public_key.pem}
+  expiration-minutes: ${JWT_EXPIRATION_MINUTES:15}
+  refresh-expiration-days: ${JWT_REFRESH_EXPIRATION_DAYS:7}
