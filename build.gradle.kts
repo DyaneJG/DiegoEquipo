@@ -35,15 +35,18 @@ dependencies {
 	testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 	testAnnotationProcessor("org.projectlombok:lombok")
 	implementation("org.springframework.boot:spring-boot-starter-oauth2-resource-server")
-    implementation("io.jsonwebtoken:jjwt-api:0.12.6")
-    runtimeOnly("io.jsonwebtoken:jjwt-impl:0.12.6")
-    runtimeOnly("io.jsonwebtoken:jjwt-jackson:0.12.6")
+	implementation("io.jsonwebtoken:jjwt-api:0.12.6")
+	runtimeOnly("io.jsonwebtoken:jjwt-impl:0.12.6")
+	runtimeOnly("io.jsonwebtoken:jjwt-jackson:0.12.6")
 	implementation("org.hibernate:hibernate-spatial:6.5.2.Final")
 	implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.6.0")
+
+	implementation("com.stripe:stripe-java:28.3.0")
 	runtimeOnly("com.h2database:h2")
-	implementation("org.springframework.boot:spring-boot-starter-websocket")
+
+	// Librerías de Tracking y WebSockets
 	implementation("com.google.zxing:core:3.5.3")
-    implementation("com.google.zxing:javase:3.5.3")
+	implementation("com.google.zxing:javase:3.5.3")
 	implementation("org.springframework.boot:spring-boot-starter-websocket")
 }
 

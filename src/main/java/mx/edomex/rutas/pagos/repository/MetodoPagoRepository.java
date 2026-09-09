@@ -1,17 +1,21 @@
 package mx.edomex.rutas.pagos.repository;
 
-import mx.edomex.rutas.pagos.model.MetodoPago;
-import org.springframework.data.jpa.repository.JpaRepository;
-
 import java.util.Optional;
 import java.util.UUID;
 
-/*
- * Acceso a la tabla metodos_pago.
- */
-public interface MetodoPagoRepository extends JpaRepository<MetodoPago, UUID> {
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
-    // Busca por código (codi, stripe, etc.)
+import mx.edomex.rutas.pagos.model.MetodoPago;
+import java.util.List;
+
+
+@Repository
+public interface MetodoPagoRepository  extends JpaRepository<MetodoPago, UUID>{
     Optional<MetodoPago> findByCodigo(String codigo);
+    Optional<MetodoPago> findByCodigoAndActivoTrue(String codigo);
 
+    List<MetodoPago> findByActivoTrue();
+
+    boolean existsByCodigoAndActivoTrue(String codigo);
 }

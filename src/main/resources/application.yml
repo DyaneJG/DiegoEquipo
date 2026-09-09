@@ -22,3 +22,8 @@
 
 server:
   port: 8080
+
+stripe:
+  secret-key: tu_secret_key
+  webhook-secret: tu_webhook_secret_key 
+  default-currency: mxn

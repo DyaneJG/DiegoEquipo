@@ -1,151 +1,65 @@
 package mx.edomex.rutas.pagos.model;
 
-import jakarta.persistence.*;
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.UUID;
 
-/*
- * Guarda la información de un pago.
- */
+import org.hibernate.annotations.CreationTimestamp;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+// import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 @Entity
 @Table(name = "pagos")
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class Pago {
 
-    // Id del pago
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
+    @Column(name = "id", nullable = false, updatable = false)
     private UUID id;
 
-    // Id del pedido
-    @Column(name = "pedido_id", nullable = false)
+    @Column(name = "pedido_id", columnDefinition = "uuid", nullable = false)
     private UUID pedidoId;
 
-    // Método de pago
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "metodo_pago_id")
-    private MetodoPago metodoPago;
+    @Column(name = "metodo_pago_id", columnDefinition = "uuid", nullable = false)
+    private UUID metodoPagoId;
 
-    // Proveedor del pago
+    @Column(name = "proveedor", length = 30)
+    // @Builder.Default
     private String proveedor;
 
-    // Estado del pago
-    @Enumerated(EnumType.STRING)
-    private EstadoPago estado;
+    @Column(name = "estado", nullable = false, length = 20)
+    private String estado;
 
-    // Monto del pago
+    @Column(name = "monto", nullable = false, precision = 12, scale = 2)
     private BigDecimal monto;
 
-    // Referencia generada por CoDi
-    @Column(name = "referencia_externa")
+    @Column(name = "referencia_externa", length = 200)
     private String referenciaExterna;
 
-    // Información que contendrá el QR
-    @Column(name = "qr_codigo", columnDefinition = "TEXT")
+    @Column(name = "qr_codigo")
     private String qrCodigo;
 
-    // Fecha de expiración del QR
-    @Column(name = "qr_expira_at")
-    private LocalDateTime qrExpiraAt;
+    @Column(name = "qr_expira_at", columnDefinition = "timestamptz")
+    private OffsetDateTime qrExpiraAt;
 
-    // Fecha en que se pagó
-    @Column(name = "pagado_at")
-    private LocalDateTime pagadoAt;
+    @Column(name = "pagado_at", columnDefinition = "timestamptz")
+    private OffsetDateTime pagadoAt;
 
-    // Fecha de creación
-    @Column(name = "creado_en")
-    private LocalDateTime creadoEn;
-
-    public Pago() {
-        this.creadoEn = LocalDateTime.now();
-        this.estado = EstadoPago.PENDIENTE;
-    }
-
-    public UUID getId() {
-        return id;
-    }
-
-    public void setId(UUID id) {
-        this.id = id;
-    }
-
-    public UUID getPedidoId() {
-        return pedidoId;
-    }
-
-    public void setPedidoId(UUID pedidoId) {
-        this.pedidoId = pedidoId;
-    }
-
-    public MetodoPago getMetodoPago() {
-        return metodoPago;
-    }
-
-    public void setMetodoPago(MetodoPago metodoPago) {
-        this.metodoPago = metodoPago;
-    }
-
-    public String getProveedor() {
-        return proveedor;
-    }
-
-    public void setProveedor(String proveedor) {
-        this.proveedor = proveedor;
-    }
-
-    public EstadoPago getEstado() {
-        return estado;
-    }
-
-    public void setEstado(EstadoPago estado) {
-        this.estado = estado;
-    }
-
-    public BigDecimal getMonto() {
-        return monto;
-    }
-
-    public void setMonto(BigDecimal monto) {
-        this.monto = monto;
-    }
-
-    public String getReferenciaExterna() {
-        return referenciaExterna;
-    }
-
-    public void setReferenciaExterna(String referenciaExterna) {
-        this.referenciaExterna = referenciaExterna;
-    }
-
-    public String getQrCodigo() {
-        return qrCodigo;
-    }
-
-    public void setQrCodigo(String qrCodigo) {
-        this.qrCodigo = qrCodigo;
-    }
-
-    public LocalDateTime getQrExpiraAt() {
-        return qrExpiraAt;
-    }
-
-    public void setQrExpiraAt(LocalDateTime qrExpiraAt) {
-        this.qrExpiraAt = qrExpiraAt;
-    }
-
-    public LocalDateTime getPagadoAt() {
-        return pagadoAt;
-    }
-
-    public void setPagadoAt(LocalDateTime pagadoAt) {
-        this.pagadoAt = pagadoAt;
-    }
-
-    public LocalDateTime getCreadoEn() {
-        return creadoEn;
-    }
-
-    public void setCreadoEn(LocalDateTime creadoEn) {
-        this.creadoEn = creadoEn;
-    }
+    @CreationTimestamp
+    @Column(name = "creado_en", columnDefinition = "timestamptz", updatable = false)
+    private OffsetDateTime creadoEn;
 }
