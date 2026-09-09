@@ -40,6 +40,19 @@ public class RepartidorController {
         return ResponseEntity.ok(actualizado);
     }
 
+    // Endpoint para consultar un solo repartidor
+    @GetMapping("/{id}")
+    public ResponseEntity<Repartidor> obtenerRepartidor(@PathVariable Long id) {
+        try {
+            // Busca al repartidor, si no existe, el catch atrapará el error
+            Repartidor repartidor = repartidorService.obtenerRepartidorPorId(id);
+            return ResponseEntity.ok(repartidor);
+        } catch (RuntimeException e) {
+            // Si el repartidor no existe, devolvemos un código 404
+            return ResponseEntity.notFound().build();
+        }
+    }
+
     // Endpoint DELETE
     @DeleteMapping("/{id}")
     public ResponseEntity<String> eliminarRepartidor(@PathVariable Long id) {

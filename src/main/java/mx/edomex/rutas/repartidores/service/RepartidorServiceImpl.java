@@ -71,4 +71,11 @@ public class RepartidorServiceImpl implements RepartidorService {
         // 2. Si existe, lo borramos
         repository.delete(repartidorExistente);
     }
+
+    // Método ObtenerID
+    @Override
+    public Repartidor obtenerRepartidorPorId(Long id) {
+        return repository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Error: Repartidor no encontrado con el ID: " + id));
+    }
 }
