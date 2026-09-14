@@ -18,7 +18,6 @@ repositories {
 }
 
 dependencies {
-	implementation("org.mindrot:jbcrypt:0.4")
 	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
 	implementation("org.springframework.boot:spring-boot-starter-data-redis")
 	implementation("org.springframework.boot:spring-boot-starter-security")
@@ -31,6 +30,7 @@ dependencies {
 	annotationProcessor("org.projectlombok:lombok")
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
 	testImplementation("org.springframework.security:spring-security-test")
+	testImplementation("com.tngtech.archunit:archunit-junit5:1.3.0")
 	testCompileOnly("org.projectlombok:lombok")
 	testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 	testAnnotationProcessor("org.projectlombok:lombok")
@@ -40,11 +40,7 @@ dependencies {
 	runtimeOnly("io.jsonwebtoken:jjwt-jackson:0.12.6")
 	implementation("org.hibernate:hibernate-spatial:6.5.2.Final")
 	implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.6.0")
-
-	implementation("com.stripe:stripe-java:28.3.0")
-	runtimeOnly("com.h2database:h2")
-
-	// Librerías de Tracking y WebSockets
+	implementation("org.springframework.boot:spring-boot-starter-mail")
 	implementation("com.google.zxing:core:3.5.3")
 	implementation("com.google.zxing:javase:3.5.3")
 	implementation("org.springframework.boot:spring-boot-starter-websocket")

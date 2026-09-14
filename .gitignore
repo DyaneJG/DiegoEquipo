@@ -41,6 +41,7 @@ out/
 *.class
 *.log
 *.jar
+!gradle/wrapper/gradle-wrapper.jar
 *.war
 *.nar
 *.ear
@@ -58,7 +59,9 @@ application-local.properties
 .DS_Store
 Thumbs.db
 
-keys/
+# JWT keys
+*.pem
+/keys/
 
 # archivos http para pruebas
 pedidos.http

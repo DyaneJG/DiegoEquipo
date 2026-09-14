@@ -2,9 +2,22 @@
   application:
     name: sistema-rm-backend
   datasource:
-    url: jdbc:postgresql://localhost:5432/sistema_rm
+    url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${DB_NAME:sistema_rm}
     username: ${DB_USER:postgres}
     password: ${DB_PASSWORD:rm_dev_local}
+
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: holaqeadr37@gmail.com
+    password: azpumkbfkzhstmbh
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+
   jpa:
     hibernate:
       ddl-auto: update
@@ -12,18 +25,21 @@
       hibernate:
         format_sql: true
     open-in-view: false
+
   flyway:
-    enabled: false
+    enabled: true
+    locations: classpath:db/migration
 
   data:
     redis:
-      host: localhost
-      port: 6379
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6379}
 
 server:
   port: 8080
 
-stripe:
-  secret-key: tu_secret_key
-  webhook-secret: tu_webhook_secret_key 
-  default-currency: mxn
+jwt:
+  private-key: ${JWT_PRIVATE_KEY_PATH:file:./keys/private_key.pem}
+  public-key: ${JWT_PUBLIC_KEY_PATH:file:./keys/public_key.pem}
+  expiration-minutes: ${JWT_EXPIRATION_MINUTES:15}
+  refresh-expiration-days: ${JWT_REFRESH_EXPIRATION_DAYS:7}
