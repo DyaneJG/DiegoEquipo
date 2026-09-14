@@ -5,7 +5,8 @@ import mx.edomex.rutas.pagos.repository.PagoRepository;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
+// FIX: Cambiamos a OffsetDateTime
+import java.time.OffsetDateTime;
 
 @Service
 public class PagoScheduler {
@@ -22,22 +23,17 @@ public class PagoScheduler {
     @Scheduled(fixedRate = 60000)
     public void cancelarPagosExpirados() {
 
-        var pagos = pagoRepository.findByEstado(
-                EstadoPago.PENDIENTE);
+        var pagos = pagoRepository.findByEstado(EstadoPago.PENDIENTE.name());
 
         for (var pago : pagos) {
 
             if (pago.getQrExpiraAt() != null &&
-                    pago.getQrExpiraAt().isBefore(LocalDateTime.now())) {
+                    pago.getQrExpiraAt().isBefore(OffsetDateTime.now())) {
 
-                pago.setEstado(EstadoPago.CANCELADO);
+                pago.setEstado(EstadoPago.CANCELADO.name());
 
                 pagoRepository.save(pago);
-
             }
-
         }
-
     }
-
 }

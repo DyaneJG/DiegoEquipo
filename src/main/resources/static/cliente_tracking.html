@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Mi Pedido | Rastreo</title>
+    <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
+
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f7f6;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            text-align: center;
+        }
+        .tarjeta-pedido {
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            width: 350px;
+        }
+        h2 {
+            margin-top: 0;
+            color: #333;
+        }
+        .etiqueta-estado {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 15px 25px;
+            font-size: 20px;
+            font-weight: bold;
+            color: white;
+            border-radius: 30px;
+            background-color: #6c757d;
+            transition: all 0.5s ease;
+        }
+        .estado-lejano { background-color: #3498db; } /* Azul */
+        .estado-cercano { background-color: #f1c40f; color: black; } /* Amarillo */
+        .estado-llegando { background-color: #2ecc71; } /* Verde */
+
+        #conexion-status {
+            margin-top: 30px;
+            font-size: 12px;
+            color: gray;
+        }
+    </style>
+</head>
+<body>
+
+<div class="tarjeta-pedido">
+    <h2>Pedido #100</h2>
+    <p>Estado actual de tu entrega:</p>
+
+    <div id="badge-estado" class="etiqueta-estado">
+        Esperando actualización...
+    </div>
+
+    <div id="conexion-status">Conectando con el servidor...</div>
+</div>
+
+<script>
+    var socket = new SockJS('/ws-tracking-sockjs');
+    var stompClient = Stomp.over(socket);
+
+    stompClient.connect({}, function (frame) {
+        document.getElementById('conexion-status').innerText = "Conectado al sistema satelital";
+
+        // Nos suscribimos al canal del pedido 100 (temporal)
+        stompClient.subscribe('/topic/pedido/100/estado', function (mensaje) {
+            var respuesta = JSON.parse(mensaje.body);
+            actualizarInterfaz(respuesta.estado);
+        });
+
+    }, function(error) {
+        document.getElementById('conexion-status').innerText = "Sin conexión al servidor";
+    });
+
+    function actualizarInterfaz(estadoBruto) {
+        var badge = document.getElementById('badge-estado');
+
+        // Limpiamos clases anteriores
+        badge.classList.remove('estado-lejano', 'estado-cercano', 'estado-llegando');
+
+        // Sincronizado exactamente con lo que imprime Spring Boot
+        if (estadoBruto === "EN_CAMINO") {
+            badge.innerText = "En camino (Lejos)";
+            badge.classList.add('estado-lejano');
+        }
+        else if (estadoBruto === "EN_TRANSITO_CERCANO") {
+            badge.innerText = "Acercándose...";
+            badge.classList.add('estado-cercano');
+        }
+        else if (estadoBruto === "LLEGANDO_AL_DOMICILIO") {
+            badge.innerText = "¡Tu repartidor está aquí!";
+            badge.classList.add('estado-llegando');
+        }
+    }
+</script>
+
+</body>
+</html>

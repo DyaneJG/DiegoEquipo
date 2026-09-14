@@ -6,8 +6,12 @@ import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBr
 import org.springframework.web.socket.config.annotation.StompEndpointRegistry;
 import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerConfigurer;
 
+//TODO (TEMPORAL) Mover la anotación @EnableMethodSecurity al archivo SecurityConfig oficial cuando exista
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
+
 @Configuration
 @EnableWebSocketMessageBroker
+@EnableMethodSecurity // TEMPORAL
 public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
     @Override
@@ -19,9 +23,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
-
         registry.addEndpoint("/ws-tracking").setAllowedOriginPatterns("*");
-
         registry.addEndpoint("/ws-tracking-sockjs").setAllowedOriginPatterns("*").withSockJS();
     }
 }

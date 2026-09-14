@@ -9,21 +9,14 @@ import mx.edomex.rutas.pagos.repository.MetodoPagoRepository;
 import mx.edomex.rutas.pagos.repository.PagoRepository;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 
 @Service
 public class PagoService {
 
-    // Repositorio de pagos
     private final PagoRepository pagoRepository;
-
-    // Repositorio de métodos
     private final MetodoPagoRepository metodoPagoRepository;
-
-    // Servicio CoDi
-  private final ProveedorPago proveedorPago;
-
-    // Servicio QR
+    private final ProveedorPago proveedorPago;
     private final QRService qrService;
 
     public PagoService(
@@ -38,61 +31,46 @@ public class PagoService {
         this.qrService = qrService;
     }
 
-    /*
-     * Crea un pago CoDi.
-     */
     public PagoResponse crearPagoCoDi(CrearPagoRequest request) {
 
-        // Busca el método CoDi
         MetodoPago metodo = metodoPagoRepository
                 .findByCodigo("codi")
                 .orElseThrow(() ->
                         new RuntimeException("Método CoDi no encontrado"));
 
-        // Genera referencia
-        String referencia =
-        proveedorPago.generarReferencia();
+        String referencia = proveedorPago.generarReferencia();
+        String contenidoQR = proveedorPago.generarContenidoQR(referencia, request.getMonto());
+        String qr = qrService.generarQR(contenidoQR);
 
-String contenidoQR =
-        proveedorPago.generarContenidoQR(
-                referencia,
-                request.getMonto());
-
-String qr =
-        qrService.generarQR(
-                contenidoQR);
-
-        // Crea el pago
         Pago pago = new Pago();
-
         pago.setPedidoId(request.getPedidoId());
-        pago.setMetodoPago(metodo);
+
+        pago.setMetodoPagoId(metodo.getId());
+
         pago.setProveedor("CoDi");
-        pago.setEstado(EstadoPago.PENDIENTE);
+
+        pago.setEstado(EstadoPago.PENDIENTE.name());
+
         pago.setMonto(request.getMonto());
         pago.setReferenciaExterna(referencia);
         pago.setQrCodigo(qr);
-        pago.setQrExpiraAt(LocalDateTime.now().plusMinutes(15));
 
-        // Guarda en BD
+        pago.setQrExpiraAt(OffsetDateTime.now().plusMinutes(15));
+
         pagoRepository.save(pago);
 
-        // Respuesta
         PagoResponse response = new PagoResponse();
-
         response.setId(pago.getId());
-        response.setEstado(pago.getEstado().name());
+
+        response.setEstado(pago.getEstado());
+
         response.setReferencia(pago.getReferenciaExterna());
         response.setQr(pago.getQrCodigo());
-        response.setExpira(pago.getQrExpiraAt());
+        response.setExpira(pago.getQrExpiraAt().toLocalDateTime());
 
         return response;
-
     }
 
-    /*
-     * Confirma un pago.
-     */
     public void confirmarPago(String referencia) {
 
         Pago pago = pagoRepository
@@ -100,11 +78,9 @@ String qr =
                 .orElseThrow(() ->
                         new RuntimeException("Pago no encontrado"));
 
-        pago.setEstado(EstadoPago.PAGADO);
-        pago.setPagadoAt(LocalDateTime.now());
+        pago.setEstado(EstadoPago.PAGADO.name());
+        pago.setPagadoAt(OffsetDateTime.now());
 
         pagoRepository.save(pago);
-
     }
-
 }

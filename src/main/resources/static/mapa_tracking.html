@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Monitoreo de Repartidores</title>
+    <title>Panel de Administración | Rutas</title>
 
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
@@ -10,28 +10,140 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
 
     <style>
-        body { font-family: Arial, sans-serif; text-align: center; background-color: #f4f4f9;}
-        #panel-busqueda { margin: 20px; padding: 15px; background: white; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); display: inline-block; }
-        input[type="number"] { padding: 8px; font-size: 16px; width: 120px; text-align: center; border: 1px solid #ccc; border-radius: 4px;}
-        button { padding: 9px 15px; font-size: 16px; background-color: #4CAF50; color: white; border: none; cursor: pointer; border-radius: 4px; font-weight: bold;}
-        button:hover { background-color: #45a049; }
+        /* Estilos del Dashboard Admin */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f2f5;
+        }
 
-        #miMapa { height: 500px; width: 80%; margin: 20px auto; border: 2px solid #ccc; border-radius: 8px;}
-        #estado { color: gray; font-weight: bold; font-size: 1.2em; transition: color 0.3s ease; }
+        /* Navbar estilo Administrador */
+        .admin-header {
+            background-color: #1a1a2e;
+            color: white;
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .admin-header h1 {
+            margin: 0;
+            font-size: 22px;
+            letter-spacing: 1px;
+        }
+
+        .badge-admin {
+            background-color: #e63946;
+            color: white;
+            padding: 6px 12px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: bold;
+            letter-spacing: 1px;
+        }
+
+        /* Contenedor Principal */
+        .dashboard-container {
+            padding: 20px;
+            text-align: center;
+        }
+
+        /* Panel de Controles */
+        #panel-busqueda {
+            margin: 20px auto;
+            padding: 20px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            display: inline-block;
+            border-top: 4px solid #1a1a2e;
+        }
+
+        #panel-busqueda label {
+            font-weight: 600;
+            color: #333;
+            margin-right: 10px;
+        }
+
+        input[type="number"] {
+            padding: 10px;
+            font-size: 16px;
+            width: 150px;
+            text-align: center;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            outline: none;
+        }
+
+        input[type="number"]:focus {
+            border-color: #1a1a2e;
+        }
+
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #1a1a2e;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 4px;
+            font-weight: bold;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #5652aa;
+        }
+
+        /* Estilos del Mapa y Estado */
+        #miMapa {
+            height: 550px;
+            width: 85%;
+            margin: 20px auto;
+            border-radius: 8px;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+            z-index: 1; /* Para que Leaflet no cubra modales */
+        }
+
+        #estado {
+            background-color: white;
+            padding: 10px 20px;
+            border-radius: 20px;
+            display: inline-block;
+            color: gray;
+            font-weight: bold;
+            font-size: 1.1em;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            transition: color 0.3s ease;
+        }
     </style>
 </head>
 <body>
 
-<h2 id="titulo-mapa">📍 Rastreo en Tiempo Real</h2>
+<!-- HEADER DEL ADMIN -->
+<header class="admin-header">
+    <h1 id="titulo-mapa">Monitoreo</h1>
+    <span class="badge-admin">ACCESO RESTRINGIDO - MÓDULO ADMIN</span>
+</header>
 
-<div id="panel-busqueda">
-    <label for="inputRepartidorId"><b>ID del Repartidor:</b></label>
-    <input type="number" id="inputRepartidorId" placeholder="Ej. 5">
-    <button onclick="buscarRepartidor()">Monitorear</button>
+<div class="dashboard-container">
+    <!-- CONTROLES -->
+    <div id="panel-busqueda">
+        <label for="inputRepartidorId">Seleccione Repartidor Activo (ID):</label>
+        <input type="number" id="inputRepartidorId" placeholder="Ej. 5">
+        <button onclick="buscarRepartidor()">Inspeccionar ruta</button>
+    </div>
+
+    <div>
+        <p id="estado">Esperando conexión segura con el servidor...</p>
+    </div>
+
+    <!-- MAPA LEAFLET -->
+    <div id="miMapa"></div>
 </div>
-
-<p id="estado">Esperando conexión con el servidor...</p>
-<div id="miMapa"></div>
 
 <script>
     var mapa = L.map('miMapa').setView([19.5443, -98.8796], 16);
@@ -40,7 +152,7 @@
     }).addTo(mapa);
 
     var marcadorRepartidor = null;
-    var coloresLatido = ['blue', 'purple', '#0097a7'];
+    var coloresLatido = ['#1a1a2e', '#081c63', '#457b9d'];
     var indiceColor = 0;
 
     var socket = new SockJS('/ws-tracking-sockjs');
@@ -50,10 +162,10 @@
     var idActivo = "";
 
     stompClient.connect({}, function (frame) {
-        document.getElementById('estado').innerText = "🟢 Servidor conectado. Ingresa un ID para rastrear.";
+        document.getElementById('estado').innerText = "Servidor conectado. Ingresa un ID para rastrear.";
         document.getElementById('estado').style.color = "green";
     }, function(error) {
-        document.getElementById('estado').innerText = "🔴 Error de conexión con el servidor";
+        document.getElementById('estado').innerText = "Error de conexión con el servidor";
         document.getElementById('estado').style.color = "red";
     });
 
@@ -71,7 +183,7 @@
             return;
         }
 
-        document.getElementById('estado').innerText = "Validando si el Repartidor " + nuevoId + " existe...";
+        document.getElementById('estado').innerText = "Verificando credenciales del Repartidor " + nuevoId + "...";
         document.getElementById('estado').style.color = "gray";
 
         // Hacemos la consulta HTTP al servidor
@@ -82,14 +194,14 @@
                     iniciarSuscripcionMapa(nuevoId);
                 } else {
                     // código 404 (o similar): No existe, se bloquea la acción
-                    document.getElementById('estado').innerText = "🔴 Error: El Repartidor " + nuevoId + " NO existe en el sistema.";
+                    document.getElementById('estado').innerText = "Acceso Denegado: Repartidor " + nuevoId + " no autorizado o inexistente.";
                     document.getElementById('estado').style.color = "red";
-                    document.getElementById('titulo-mapa').innerText = "📍 Rastreo en Tiempo Real";
+                    document.getElementById('titulo-mapa').innerText = "Monitoreo";
 
                 }
             })
             .catch(error => {
-                document.getElementById('estado').innerText = "🔴 Error de red al intentar validar el ID.";
+                document.getElementById('estado').innerText = "Error de red al intentar contactar la base de datos.";
                 document.getElementById('estado').style.color = "red";
             });
     }
@@ -102,8 +214,8 @@
 
         idActivo = nuevoId;
 
-        document.getElementById('titulo-mapa').innerText = "📍 Rastreo en Tiempo Real - Repartidor " + idActivo;
-        document.getElementById('estado').innerText = "🟢 ID Validado. Buscando señal del repartidor " + idActivo + "...";
+        document.getElementById('titulo-mapa').innerText = "Auditoría en Vivo - Repartidor " + idActivo;
+        document.getElementById('estado').innerText = "Conexión establecida. Interceptando señal del repartidor " + idActivo + "...";
         document.getElementById('estado').style.color = "green";
 
         // Nos suscribimos al nuevo canal
@@ -113,7 +225,7 @@
             var lon = ubicacion.longitud;
 
             var colorElegido = coloresLatido[indiceColor];
-            document.getElementById('estado').innerText = "📍 ¡Actualizado! Lat: " + lat + ", Lon: " + lon;
+            document.getElementById('estado').innerText = "Transmisión Activa | Lat: " + lat + ", Lon: " + lon;
             document.getElementById('estado').style.color = colorElegido;
             indiceColor = (indiceColor + 1) % coloresLatido.length;
 
@@ -124,7 +236,7 @@
             }
 
             mapa.panTo([lat, lon]);
-            marcadorRepartidor.bindPopup("<b>Repartidor " + idActivo + "</b><br>Lat: " + lat + "<br>Lon: " + lon).openPopup();
+            marcadorRepartidor.bindPopup("<b>UNIDAD " + idActivo + "</b><br>Lat: " + lat + "<br>Lon: " + lon).openPopup();
         });
     }
 </script>

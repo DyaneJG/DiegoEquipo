@@ -20,8 +20,6 @@ public class UbicacionController {
 
     private final UbicacionService ubicacionService;
 
-    // Inyección de dependencias por constructor (recomendado por Spring sobre @Autowired)
-    // Facilita la creación de pruebas unitarias (Mocks).
     public UbicacionController(UbicacionService ubicacionService) {
         this.ubicacionService = ubicacionService;
     }
