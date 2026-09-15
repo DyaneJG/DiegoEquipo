@@ -58,5 +58,7 @@ application-local.properties
 .DS_Store
 Thumbs.db
 
-keys/
+# JWT keys
+*.pem
+/keys/
 
