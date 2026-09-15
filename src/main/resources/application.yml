@@ -5,19 +5,18 @@
     url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${DB_NAME:sistema_rm}
     username: ${DB_USER:rm_admin}
     password: ${DB_PASSWORD:rm_dev_local}
-  
-  spring:
-  mail: 
-    host: smtp.gmail.com
-    port: 587
-    username: holaqeadr37@gmail.com
-    password: azpumkbfkzhstmbh
+
+  mail:
+    host: ${MAIL_HOST:smtp.gmail.com}
+    port: ${MAIL_PORT:587}
+    username: ${MAIL_USERNAME:}
+    password: ${MAIL_PASSWORD:}
     properties:
       mail:
         smtp:
-          auth: true
+          auth: ${MAIL_SMTP_AUTH:true}
           starttls:
-            enable: true
+            enable: ${MAIL_SMTP_STARTTLS:true}
   jpa:
     hibernate:
       ddl-auto: validate

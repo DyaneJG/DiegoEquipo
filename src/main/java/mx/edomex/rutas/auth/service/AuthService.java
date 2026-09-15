@@ -50,7 +50,7 @@ public class AuthService {
     }
 
     public LoginResponse login(LoginRequest request) {
-        Usuario usuario = usuarioRepository.findBycorreoAndActivoTrue(request.email())
+        Usuario usuario = usuarioRepository.findByCorreoAndActivoTrue(request.email())
             .orElseThrow(() -> new DominioException("Credenciales inválidas", HttpStatus.UNAUTHORIZED));
 
         if (!passwordEncoder.matches(request.password(), usuario.getPasswordHash())) {
@@ -70,7 +70,7 @@ public class AuthService {
         String email = refreshTokenService.obtenerEmail(request.refreshToken())
             .orElseThrow(() -> new DominioException("Refresh token inválido o expirado", HttpStatus.UNAUTHORIZED));
 
-        Usuario usuario = usuarioRepository.findBycorreoAndActivoTrue(email)
+        Usuario usuario = usuarioRepository.findByCorreoAndActivoTrue(email)
             .orElseThrow(() -> new DominioException("Usuario no encontrado", HttpStatus.UNAUTHORIZED));
 
         try {

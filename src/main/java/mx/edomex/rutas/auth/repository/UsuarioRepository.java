@@ -7,6 +7,6 @@ import java.util.Optional;
 import java.util.UUID;
 
 public interface UsuarioRepository extends BaseAuditRepository<Usuario, UUID> {
-    Optional<Usuario> findBycorreoAndActivoTrue(String correo);
-    boolean existsByCorreo(String corrreo);
+    Optional<Usuario> findByCorreoAndActivoTrue(String correo);
+    boolean existsByCorreo(String correo);
 }
