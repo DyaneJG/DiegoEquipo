@@ -43,27 +43,4 @@ public class PagoController {
 
     }
 
-    @GetMapping("/{id}")
-public ResponseEntity<PagoResponse> obtenerPago(
-        @PathVariable UUID id){
-
-    Pago pago = pagoRepository.findById(id)
-            .orElseThrow(() ->
-                    new RuntimeException("Pago no encontrado"));
-
-    PagoResponse response = new PagoResponse();
-
-    response.setId(pago.getId());
-    response.setEstado(pago.getEstado().name());
-    response.setReferencia(
-            pago.getReferenciaExterna());
-    response.setQr(
-            pago.getQrCodigo());
-    response.setExpira(
-            pago.getQrExpiraAt());
-
-    return ResponseEntity.ok(response);
-
-}
-
 }

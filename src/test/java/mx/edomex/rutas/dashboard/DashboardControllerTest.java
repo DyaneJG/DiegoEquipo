@@ -18,6 +18,13 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+/**
+ * Prueba de comportamiento del controller del dashboard.
+ *
+ * Esta validación no prueba la base de datos ni la lógica real de agregación,
+ * sino que confirma que la API expone correctamente el contrato esperado
+ * para el frontend y que el controller delega adecuadamente al servicio.
+ */
 class DashboardControllerTest {
 
     private MockMvc mockMvc;
